@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Andrea Tour</title>
+<meta name="description" content="Andrea Tour, noleggio autobus e minibus con conducente a Piacenza dal 2013. Gite, transfer, viaggi in Italia e in Europa.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Doto:wght@700;900&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Layout: segnaletica da autobus. Un pannello di destinazione a LED fa da filo conduttore, rosso Andrea Tour come unico accento. */
+  --bg:#eef0f1;
+  --surface:#ffffff;
+  --ink:#15181c;
+  --muted:#5b636c;
+  --line:#d5dade;
+  --accent:#c8161d;
+  --accent-ink:#ffffff;
+  --board:#121416;
+  --led:#ffb01f;
+  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --dot:"Doto","Courier New",monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#111417;--surface:#1a1e22;--ink:#eef0f2;--muted:#9aa3ac;--line:#2c3238;
+    --accent:#ef3a40;--board:#07080a;color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111417;--surface:#1a1e22;--ink:#eef0f2;--muted:#9aa3ac;--line:#2c3238;
+  --accent:#ef3a40;--board:#07080a;color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--body);-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.wrap{width:min(1180px,100% - 40px);margin-inline:auto}
+h1,h2,h3{font-family:var(--display);text-transform:uppercase;line-height:.95;margin:0;text-wrap:balance;letter-spacing:.01em}
+h2{font-size:clamp(2.4rem,6vw,4.2rem);font-weight:900}
+h3{font-size:1.7rem;font-weight:800}
+p{margin:0}
+.eyebrow{font:700 .78rem/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+
+/* Header */
+header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:24px;height:68px}
+.logo{display:flex;flex-direction:column;text-decoration:none;line-height:1}
+.logo b{font:900 1.65rem/0.9 var(--display);color:var(--accent);letter-spacing:.02em}
+.logo small{font:600 .62rem/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+nav{display:flex;gap:22px;margin-left:auto}
+nav a{text-decoration:none;font-weight:600;font-size:.95rem;color:var(--muted)}
+nav a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:12px 20px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-weight:700;text-decoration:none;border:0;cursor:pointer;font-family:var(--body);font-size:1rem;white-space:nowrap}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+.menu-toggle{display:none;margin-left:auto;background:none;border:0;color:var(--ink);font:700 .95rem var(--body);cursor:pointer;padding:8px}
+@media (max-width:860px){
+  nav{display:none;position:absolute;top:68px;left:0;right:0;flex-direction:column;gap:0;background:var(--surface);border-bottom:1px solid var(--line)}
+  nav.open{display:flex}
+  nav a{padding:16px 20px;border-top:1px solid var(--line);color:var(--ink)}
+  .menu-toggle{display:block}
+  .bar .btn{display:none}
+}
+
+/* Hero */
+.hero{padding:40px 0 56px}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+.board{background:var(--board);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:16px;box-shadow:inset 0 0 0 4px #2a2e33,0 10px 30px -12px rgba(0,0,0,.5);max-width:560px}
+.board .line-no{font:900 2.1rem/1 var(--dot);color:var(--board);background:var(--led);border-radius:4px;padding:4px 10px}
+.board .dest{font:900 clamp(1.25rem,3.4vw,2.1rem)/1.15 var(--dot);color:var(--led);text-shadow:0 0 8px rgba(255,176,31,.55);white-space:nowrap;overflow:hidden;flex:1;letter-spacing:.04em;text-transform:uppercase}
+.board .dest span{opacity:.55}
+.hero h1{font-size:clamp(3.2rem,9vw,7rem);font-weight:900;margin:28px 0 18px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero .lead{font-size:1.15rem;color:var(--muted);max-width:52ch}
+.hero .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.photo{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:4/5;background:var(--line)}
+.photo img{width:100%;height:100%;object-fit:cover;object-position:center 62%}
+.photo figcaption{position:absolute;left:14px;bottom:14px;background:var(--board);color:var(--led);font:700 .95rem/1 var(--dot);padding:8px 12px;border-radius:6px;letter-spacing:.05em}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:48px;border-top:2px solid var(--ink)}
+.facts div{padding:18px 18px 0 0}
+.facts b{display:block;font:900 2.6rem/1 var(--display);font-variant-numeric:tabular-nums}
+.facts span{font-size:.9rem;color:var(--muted)}
+@media (max-width:860px){
+  .hero-grid{grid-template-columns:1fr}
+  .photo{aspect-ratio:3/4}
+  .photo img{object-position:center 45%}
+  .facts{grid-template-columns:repeat(2,1fr);row-gap:10px}
+}
+
+section{padding:72px 0}
+.head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:20px;margin-bottom:36px}
+.head p{color:var(--muted);max-width:46ch}
+
+/* Servizi */
+.services{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.svc{background:var(--surface);padding:28px 26px 30px;display:flex;flex-direction:column;gap:12px}
+.svc .code{font:900 1rem/1 var(--dot);color:var(--accent);letter-spacing:.08em}
+.svc p{color:var(--muted);font-size:.98rem}
+@media (max-width:860px){.services{grid-template-columns:1fr}}
+@media (min-width:861px) and (max-width:1050px){.services{grid-template-columns:repeat(2,1fr)}}
+
+/* Flotta */
+.fleet{background:var(--board);color:#eef0f2}
+.fleet h2,.fleet .head p{color:#eef0f2}
+.fleet .head p{opacity:.7}
+.fleet .eyebrow{color:var(--led)}
+.vehicles{display:grid;gap:14px}
+.veh{display:grid;grid-template-columns:150px 1fr 120px;gap:24px;align-items:center;padding:18px 0;border-top:1px solid #2c3238}
+.veh .seats-n{font:900 3.2rem/1 var(--display);color:var(--led);font-variant-numeric:tabular-nums}
+.veh .seats-n small{font:600 .8rem var(--body);color:#9aa3ac;letter-spacing:.1em;text-transform:uppercase;margin-left:6px}
+.veh .type{font-size:.9rem;color:#9aa3ac;text-align:right}
+.veh .type b{display:block;color:#eef0f2;font-size:1rem}
+.seatmap{display:flex;flex-wrap:wrap;gap:4px;max-width:520px}
+.seatmap i{width:12px;height:12px;border-radius:3px;background:var(--led);opacity:.9}
+.comfort{display:flex;flex-wrap:wrap;gap:10px;margin-top:36px}
+.comfort span{border:1px solid #3a4148;border-radius:999px;padding:8px 16px;font-size:.92rem}
+@media (max-width:700px){
+  .veh{grid-template-columns:1fr;gap:10px}
+  .veh .type{text-align:left}
+}
+
+/* Galleria */
+.gallery{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:200px;gap:12px}
+.gallery figure{margin:0;border-radius:10px;overflow:hidden;background:var(--line)}
+.gallery img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.gallery figure:hover img{transform:scale(1.04)}
+.g-tall{grid-row:span 2}
+.g-wide{grid-column:span 2}
+@media (max-width:860px){.gallery{grid-template-columns:repeat(2,1fr);grid-auto-rows:160px}}
+
+/* Preventivo */
+.quote-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:48px;align-items:start}
+.contact-list{display:grid;gap:22px;margin-top:28px}
+.contact-list div{border-top:1px solid var(--line);padding-top:14px}
+.contact-list dt{font:700 .75rem/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.contact-list dd{margin:0;font-size:1.1rem;font-weight:600}
+.contact-list a{text-decoration:none}
+.contact-list a:hover{color:var(--accent)}
+form{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:28px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field.full{grid-column:1/-1}
+label{font-size:.85rem;font-weight:600}
+input,select,textarea{font:inherit;font-size:1rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;width:100%}
+textarea{min-height:110px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+.form-actions{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.form-note{font-size:.85rem;color:var(--muted)}
+.result{grid-column:1/-1;display:none;border-left:4px solid var(--accent);background:var(--bg);padding:16px 18px;border-radius:0 8px 8px 0}
+.result.show{display:block}
+.result p{margin-bottom:12px}
+.result .links{display:flex;flex-wrap:wrap;gap:10px}
+.err{color:var(--accent);font-size:.85rem;min-height:1em}
+@media (max-width:860px){.quote-grid{grid-template-columns:1fr}form{grid-template-columns:1fr;padding:20px}}
+
+footer{border-top:1px solid var(--line);padding:32px 0 48px;font-size:.85rem;color:var(--muted)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a class="logo" href="#top" aria-label="Andrea Tour, inizio pagina"><b>ANDREA TOUR</b><small>Viaggi nazionali e internazionali</small></a>
+    <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="mainNav">Menu</button>
+    <nav id="mainNav">
+      <a href="#servizi">Servizi</a>
+      <a href="#flotta">I mezzi</a>
+      <a href="#galleria">Galleria</a>
+      <a href="#preventivo">Preventivo</a>
+      <a href="#contatti">Contatti</a>
+    </nav>
+    <a class="btn" href="tel:+393921881365">Chiama 392 188 1365</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero" aria-label="Presentazione">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <div class="board" role="img" aria-label="Pannello destinazioni: da Piacenza verso tutta Italia ed Europa">
+            <span class="line-no">PC</span>
+            <span class="dest" id="dest">Piacenza <span>›</span> Parigi</span>
+          </div>
+          <h1>Da Piacenza a <em>tutta Europa</em>, con il conducente</h1>
+          <p class="lead">Noleggio di minibus e autobus con autista dal 2013. Gite scolastiche e parrocchiali, transfer per hotel, porti e aeroporti, viaggi di gruppo con itinerari su misura.</p>
+          <div class="cta">
+            <a class="btn" href="#preventivo">Chiedi un preventivo gratuito</a>
+            <a class="btn ghost" href="#flotta">Scopri i mezzi</a>
+          </div>
+        </div>
+        <figure class="photo" style="margin:0">
+          <img src="img/parigi.jpg" alt="Il retro di un bus Andrea Tour parcheggiato sotto la Torre Eiffel a Parigi">
+          <figcaption>Parigi · Tour Eiffel</figcaption>
+        </figure>
+      </div>
+      <div class="facts">
+        <div><b>2013</b><span>attivi a Piacenza</span></div>
+        <div><b>7–60</b><span>posti per mezzo</span></div>
+        <div><b>Euro 5·6</b><span>basso impatto ambientale</span></div>
+        <div><b>24/7</b><span>aperti tutti i giorni</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="servizi">
+    <div class="wrap">
+      <div class="head">
+        <div><p class="eyebrow">Servizi</p><h2>Dove vi portiamo</h2></div>
+        <p>Autisti professionisti per viaggi in tutta Italia e in Europa. Voi pensate al viaggio, alla guida ci pensiamo noi.</p>
+      </div>
+      <div class="services">
+        <article class="svc"><span class="code">01 · SCUOLE</span><h3>Gite scolastiche e parrocchiali</h3><p>Uscite didattiche, campi estivi, pellegrinaggi. Mezzi della capienza giusta per una classe o per tutto l'oratorio.</p></article>
+        <article class="svc"><span class="code">02 · TRANSFER</span><h3>Hotel, porti e aeroporti</h3><p>Trasferimenti da e per stazioni, aeroporti e hotel delle località di mare e di montagna, in provincia di Piacenza e oltre.</p></article>
+        <article class="svc"><span class="code">03 · VIAGGI</span><h3>Viaggi organizzati</h3><p>Tour di uno o più giorni in Italia e in Europa per gruppi, agenzie e associazioni, con itinerari personalizzati.</p></article>
+        <article class="svc"><span class="code">04 · FESTE</span><h3>Trasporto comitive</h3><p>Matrimoni, compleanni, lauree, addii al celibato. Godetevi la festa, a guidare ci pensiamo noi.</p></article>
+        <article class="svc"><span class="code">05 · AZIENDE</span><h3>Eventi e trasferte</h3><p>Navette per fiere, congressi e trasferte aziendali, con orari concordati e un unico referente.</p></article>
+        <article class="svc"><span class="code">06 · SU MISURA</span><h3>Itinerari personalizzati</h3><p>Ci dite dove, quando e quanti siete: prepariamo un preventivo dettagliato e gratuito.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="flotta" class="fleet">
+    <div class="wrap">
+      <div class="head">
+        <div><p class="eyebrow">I mezzi</p><h2>Un posto per ognuno</h2></div>
+        <p>Minibus e pullman Euro 5 ed Euro 6, scelti in base al numero di passeggeri. Ogni quadratino è un posto a sedere.</p>
+      </div>
+      <div class="vehicles" id="vehicles">
+        <div class="veh" data-seats="7"><div class="seats-n">7<small>posti</small></div><div class="seatmap" aria-hidden="true"></div><div class="type"><b>Minivan</b>transfer e piccoli gruppi</div></div>
+        <div class="veh" data-seats="16"><div class="seats-n">16<small>posti</small></div><div class="seatmap" aria-hidden="true"></div><div class="type"><b>Minibus</b>comitive e feste</div></div>
+        <div class="veh" data-seats="28"><div class="seats-n">28<small>posti</small></div><div class="seatmap" aria-hidden="true"></div><div class="type"><b>Midibus</b>classi e gite</div></div>
+        <div class="veh" data-seats="52"><div class="seats-n">52<small>posti</small></div><div class="seatmap" aria-hidden="true"></div><div class="type"><b>Gran turismo</b>viaggi lunghi</div></div>
+        <div class="veh" data-seats="60"><div class="seats-n">60<small>posti</small></div><div class="seatmap" aria-hidden="true"></div><div class="type"><b>Gran turismo</b>grandi gruppi</div></div>
+      </div>
+      <div class="comfort" aria-label="Comfort a bordo">
+        <span>Aria condizionata</span><span>Sedili reclinabili</span><span>Televisore</span><span>Servizio bar</span><span>Euro 5 ed Euro 6</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="galleria">
+    <div class="wrap">
+      <div class="head">
+        <div><p class="eyebrow">Galleria</p><h2>In viaggio con noi</h2></div>
+      </div>
+      <div class="gallery">
+        <figure class="g-tall"><img src="img/bus-torino.jpg" alt="Pullman gran turismo davanti a un palazzo storico" loading="lazy"></figure>
+        <figure class="g-wide"><img src="img/bus-piazza.jpg" alt="Due pullman parcheggiati in una piazza del centro storico" loading="lazy"></figure>
+        <figure class="g-tall"><img src="img/interni.jpg" alt="Interno di un pullman con sedili imbottiti" loading="lazy"></figure>
+        <figure><img src="img/minibus-hotel.jpg" alt="Minibus bianco davanti all'ingresso di un hotel" loading="lazy"></figure>
+        <figure><img src="img/minibus-sera.jpg" alt="Midibus bianco fotografato di sera" loading="lazy"></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="preventivo">
+    <div class="wrap quote-grid">
+      <div id="contatti">
+        <p class="eyebrow">Info e preventivi</p>
+        <h2>Dove andiamo?</h2>
+        <p style="color:var(--muted);margin-top:16px;max-width:42ch">Compilate il modulo: la richiesta parte da WhatsApp o dalla vostra email, già scritta. Rispondiamo tutti i giorni.</p>
+        <dl class="contact-list">
+          <div><dt>Cellulare e WhatsApp</dt><dd><a href="tel:+393921881365">+39 392 188 1365</a></dd></div>
+          <div><dt>Tel. e fax</dt><dd><a href="tel:+390523517257">+39 0523 517257</a></dd></div>
+          <div><dt>Email</dt><dd><a href="mailto:info.andreatour@gmail.com">info.andreatour@gmail.com</a></dd></div>
+          <div><dt>Sede operativa</dt><dd>Via San Giuseppe 4, 29010 Pontenure (PC)</dd></div>
+          <div><dt>Orari</dt><dd>Lunedì–domenica, aperti 24 ore</dd></div>
+        </dl>
+      </div>
+
+      <form id="quoteForm" novalidate>
+        <div class="field"><label for="f-nome">Nome e cognome</label><input id="f-nome" name="nome" autocomplete="name"></div>
+        <div class="field"><label for="f-tel">Telefono *</label><input id="f-tel" name="telefono" type="tel" autocomplete="tel" required></div>
+        <div class="field"><label for="f-da">Partenza da</label><input id="f-da" name="da" placeholder="Piacenza"></div>
+        <div class="field"><label for="f-a">Destinazione *</label><input id="f-a" name="a" placeholder="Venezia, aeroporto di Linate…" required></div>
+        <div class="field"><label for="f-data">Data</label><input id="f-data" name="data" type="date"></div>
+        <div class="field"><label for="f-pax">Passeggeri</label>
+          <select id="f-pax" name="pax">
+            <option value="">Seleziona</option>
+            <option>fino a 7</option><option>8–16</option><option>17–28</option><option>29–52</option><option>53–60</option><option>oltre 60</option>
+          </select></div>
+        <div class="field full"><label for="f-tipo">Tipo di servizio</label>
+          <select id="f-tipo" name="tipo">
+            <option>Viaggio organizzato</option><option>Transfer hotel / porto / aeroporto</option><option>Gita scolastica o parrocchiale</option><option>Comitiva per festa o evento</option><option>Trasferta aziendale</option><option>Altro</option>
+          </select></div>
+        <div class="field full"><label for="f-msg">Note</label><textarea id="f-msg" name="note" placeholder="Orari, andata e ritorno, soste, bagagli…"></textarea></div>
+        <p class="err full" id="formErr" role="alert"></p>
+        <div class="form-actions">
+          <button class="btn" type="submit">Prepara la richiesta</button>
+          <span class="form-note">* campi obbligatori</span>
+        </div>
+        <div class="result" id="result" aria-live="polite">
+          <p><strong>Richiesta pronta.</strong> Scegliete come inviarla:</p>
+          <div class="links">
+            <a class="btn" id="waLink" href="#" target="_blank" rel="noopener">Invia su WhatsApp</a>
+            <a class="btn ghost" id="mailLink" href="#">Invia per email</a>
+            <button class="btn ghost" type="button" id="copyBtn">Copia il testo</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span><strong>Andrea Tour</strong> di Ajdini Indrit · Via Moschini 24, 29010 Pontenure (PC)</span>
+    <span>P.IVA 01652360338 · REA PC 180622</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Menu mobile
+  var t=document.getElementById('menuToggle'),n=document.getElementById('mainNav');
+  t.addEventListener('click',function(){var o=n.classList.toggle('open');t.setAttribute('aria-expanded',o)});
+  n.addEventListener('click',function(e){if(e.target.tagName==='A'){n.classList.remove('open');t.setAttribute('aria-expanded','false')}});
+
+  // Mappa dei posti
+  document.querySelectorAll('.veh').forEach(function(v){
+    var m=v.querySelector('.seatmap'),k=+v.dataset.seats,h='';
+    for(var i=0;i<k;i++)h+='<i></i>';m.innerHTML=h;
+  });
+
+  // Pannello destinazioni
+  var dests=['Parigi','Venezia','Roma','Malpensa','Linate','Monaco','Rimini','Firenze','Torino','Genova porto'];
+  var el=document.getElementById('dest'),idx=0;
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  function show(word){
+    if(reduce){el.innerHTML='Piacenza <span>›</span> '+word;return}
+    var step=0,len=word.length;
+    var iv=setInterval(function(){
+      var out='';
+      for(var i=0;i<len;i++){out+= i<step||word[i]===' ' ? word[i] : chars[Math.floor(Math.random()*26)]}
+      el.innerHTML='Piacenza <span>›</span> '+out;
+      if(++step>len)clearInterval(iv);
+    },45);
+  }
+  setInterval(function(){idx=(idx+1)%dests.length;show(dests[idx])},3200);
+
+  // Modulo preventivo
+  var f=document.getElementById('quoteForm'),err=document.getElementById('formErr'),res=document.getElementById('result'),text='';
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    var d=Object.fromEntries(new FormData(f).entries());
+    if(!d.telefono.trim()||!d.a.trim()){err.textContent='Inserite telefono e destinazione per preparare la richiesta.';res.classList.remove('show');return}
+    err.textContent='';
+    var dataIt=d.data?d.data.split('-').reverse().join('/'):'da definire';
+    text='Richiesta preventivo Andrea Tour\n'+
+      'Servizio: '+d.tipo+'\n'+
+      'Partenza: '+(d.da||'Piacenza')+'\n'+
+      'Destinazione: '+d.a+'\n'+
+      'Data: '+dataIt+'\n'+
+      'Passeggeri: '+(d.pax||'da definire')+'\n'+
+      (d.note?'Note: '+d.note+'\n':'')+
+      'Nome: '+(d.nome||'-')+'\nTelefono: '+d.telefono;
+    document.getElementById('waLink').href='https://wa.me/393921881365?text='+encodeURIComponent(text);
+    document.getElementById('mailLink').href='mailto:info.andreatour@gmail.com?subject='+encodeURIComponent('Richiesta preventivo: '+d.a)+'&body='+encodeURIComponent(text);
+    res.classList.add('show');
+  });
+  document.getElementById('copyBtn').addEventListener('click',function(){
+    var b=this;
+    navigator.clipboard.writeText(text).then(function(){b.textContent='Copiato'},function(){b.textContent='Copia non riuscita'});
+  });
+})();
+</script>
+</body>
+</html>
